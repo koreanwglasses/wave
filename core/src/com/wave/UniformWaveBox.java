@@ -95,6 +95,15 @@ public class UniformWaveBox {
     }
 
     /**
+     * Transforms from real coordinate space to index space
+     * @param r
+     * @return
+     */
+    private int realToIndex(double r) {
+        return (int) Math.round(r * resolution);
+    }
+
+    /**
      * Returns the average displacement for a square centered at x, y and side length 2 * radius
      * @param x
      * @param y
@@ -102,6 +111,14 @@ public class UniformWaveBox {
      * @return Average displacement
      */
     public double sample(double x, double y, double radius) {
-        return 0;
+        double sum = 0;
+        int area = 0;
+        for (int xi = realToIndex(x - radius); xi <= realToIndex(x + radius); xi++) {
+            for (int yi = realToIndex(y - radius); yi <= realToIndex(y + radius); yi++) {
+                sum += getZ(xi, yi);
+                area++;
+            }
+        }
+        return sum / area;
     }
 }
