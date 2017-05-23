@@ -95,12 +95,13 @@ public class UniformWaveBox {
     }
 
     /**
-     *
+     * Returns the average displacement for a square centered at x, y and side length 2 * radius
      * @param x
      * @param y
      * @param radius
+     * @return Average displacement
      */
-    public void sample(double x, double y, double radius) {
-
+    public double sample(double x, double y, double radius) {
+        return 0;
     }
 }
