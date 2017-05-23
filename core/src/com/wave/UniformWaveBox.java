@@ -10,14 +10,24 @@ public class UniformWaveBox {
     private double mass = 1;
     private double k = 1;
 
+    private boolean bounded = false;
+
     private int resolution;
 
+    /**
+     * A wave simulator with a linear restoring force. Confined to [0, 1] x [0, 1]. Approximation based on a square lattice.
+     * @param resolution
+     */
     public UniformWaveBox(int resolution) {
         this.resolution = resolution;
         this.z = new double[resolution][resolution];
         this.dzdt = new double[resolution][resolution];
     }
 
+    /**
+     * Step the simulation by the specified time.
+     * @param dt
+     */
     public void step(double dt) {
         double dm = mass / (resolution * resolution); // dm
 
@@ -37,13 +47,60 @@ public class UniformWaveBox {
         }
     }
 
+    /**
+     * Calculate the force acting on a single particle
+     * @param xi
+     * @param yi
+     * @return force
+     */
     private double force(int xi, int yi) {
         // cross based
-        double dz1 = xi < resolution - 1 ? (z[xi + 1][yi] - z[xi][yi]) : 0; // If neighbor exists, then dz = neighbor - z, else 0
-        double dz2 = xi > 0 ? (z[xi - 1][yi] - z[xi][yi]): 0;
-        double dz3 = yi < resolution - 1 ? (z[xi][yi + 1] - z[xi][yi]) : 0;
-        double dz4 = yi > 0 ? (z[xi][yi - 1] - z[xi][yi]) : 0;
+
+        double z = getZ(xi,yi);
+
+        double dz1 = getZ(xi + 1,yi) - z;
+        double dz2 = getZ(xi - 1,yi) - z;
+        double dz3 = getZ(xi,yi + 1) - z;
+        double dz4 = getZ(xi,yi - 1) - z;
 
         return k * (dz1 + dz2 + dz3 + dz4);
+    }
+
+    /**
+     * Gets the displacement for a particle, including ones that are out of bounds. If the particle named is out of bounds, then this function will return 0 is 'bounded' is true. Otherwise it will return the value of the nearest particle within bounds.
+     * @param xi
+     * @param yi
+     * @return Displacement
+     */
+    private double getZ(int xi, int yi) {
+        boolean xlb = xi >= 0; // is x above lower bound
+        boolean xub = xi < resolution; // is x below upper bound
+        boolean xib = xlb && xub; // is x within bound
+        boolean ylb = yi >= 0;
+        boolean yub = yi < resolution;
+        boolean yib = ylb && yub;
+
+        if(xib && yib) return z[xi][yi];
+        else if (bounded) return 0; // Return 0 if bounded. Otherwise, return value of nearest.
+        else if (!xlb) {
+            if(yib) return z[0][yi];
+            else if(!ylb) return z[0][0];
+            else if(!yub) return z[0][resolution - 1];
+        } else if (!xub) {
+            if(yib) return z[resolution - 1][yi];
+            else if(!ylb) return z[resolution - 1][0];
+            else if(!yub) return z[resolution - 1][resolution - 1];
+        } else if (!ylb) return z[xi][0];
+        else if (!yub) return z[xi][resolution - 1];
+    }
+
+    /**
+     *
+     * @param x
+     * @param y
+     * @param radius
+     */
+    public void sample(double x, double y, double radius) {
+
     }
 }
