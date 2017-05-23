@@ -106,21 +106,37 @@ public class UniformWaveBox {
     }
 
     /**
-     * Returns the average displacement for a square centered at x, y and side length 2 * radius
-     * @param x
-     * @param y
-     * @param radius
+     * Returns the average displacement for a square between x1, y1 and x2, y2
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
      * @return Average displacement
      */
-    public double sample(double x, double y, double radius) {
+    public double sample(double x1, double y1, double x2, double y2) {
         double sum = 0;
         int area = 0;
-        for (int xi = realToIndex(x - radius); xi <= realToIndex(x + radius); xi++) {
-            for (int yi = realToIndex(y - radius); yi <= realToIndex(y + radius); yi++) {
+        for (int xi = realToIndex(x1); xi < realToIndex(x2); xi++) {
+            for (int yi = realToIndex(y1); yi < realToIndex(y2); yi++) {
                 sum += getZ(xi, yi);
                 area++;
             }
         }
         return sum / area;
+    }
+
+    /**
+     *
+     * @param out
+     * @param width
+     * @param height
+     * @param xbegin
+     * @param xend
+     * @param ybegin
+     * @param yend
+     * @return
+     */
+    public double[][] sampleArray(double[][] out, int width, int height, double xbegin, double xend, double ybegin, double yend) {
+
     }
 }
