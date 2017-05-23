@@ -24,10 +24,7 @@ public class UniformWaveBox implements WaveBox {
         this.dzdt = new double[resolution][resolution];
     }
 
-    /**
-     * Step the simulation by the specified time.
-     * @param dt
-     */
+    @Override
     public void step(double dt) {
         double dm = mass / (resolution * resolution); // dm
 
@@ -141,8 +138,8 @@ public class UniformWaveBox implements WaveBox {
 
         int xi = 0;
         int yi = 0;
-        for(double x = xbegin; x < xend; x += dx) {
-            for(double y = ybegin; y < yend; y += dy) {
+        for(double x = xbegin; x < xend && xi < width; x += dx) {
+            for(double y = ybegin; y < yend && yi < height; y += dy) {
                 out[xi][yi++] = sample(x, y, x + dx, y + dy);
             }
             xi++;

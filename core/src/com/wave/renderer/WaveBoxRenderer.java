@@ -1,5 +1,6 @@
 package com.wave.renderer;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -28,14 +29,15 @@ public class WaveBoxRenderer {
     private int destWidth = 600;
     private int destHeight = 400;
 
-    private double max;
+    private double max = 1;
 
     public WaveBoxRenderer(WaveBox waveBox, int resolutionX, int resolutionY) {
         this.waveBox = waveBox;
         this.resolutionX = resolutionX;
         this.resolutionY = resolutionY;
 
-        this.pixmap = new Pixmap(resolutionX, resolutionY, Pixmap.Format.Intensity);
+        this.sampleArray = new double[resolutionX][resolutionY];
+        this.pixmap = new Pixmap(resolutionX, resolutionY, Pixmap.Format.RGBA8888);
     }
 
     /**
@@ -46,8 +48,8 @@ public class WaveBoxRenderer {
         waveBox.sampleArray(sampleArray, resolutionX, resolutionY, sourceX1, sourceX2, sourceY1, sourceY2);
         for(int x = 0; x < resolutionX; x++) {
             for(int y = 0; y < resolutionY; y++) {
-                int color = (int) (255 * sampleArray[x][y] / max);
-                pixmap.drawPixel(x, y, color);
+                float value = (float) (sampleArray[x][y] / (2 * max) + 0.5);
+                pixmap.drawPixel(x, y, Color.rgba8888(value, value, value, 1));
             }
         }
 
