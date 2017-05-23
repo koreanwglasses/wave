@@ -126,7 +126,7 @@ public class UniformWaveBox {
     }
 
     /**
-     *
+     * Updates array with sampled values of the wave box
      * @param out
      * @param width
      * @param height
@@ -136,7 +136,18 @@ public class UniformWaveBox {
      * @param yend
      * @return
      */
-    public double[][] sampleArray(double[][] out, int width, int height, double xbegin, double xend, double ybegin, double yend) {
+    public void sampleArray(double[][] out, int width, int height, double xbegin, double xend, double ybegin, double yend) {
+        double dx = (xend - xbegin) / width;
+        double dy = (yend - ybegin) / height;
 
+        int xi = 0;
+        int yi = 0;
+        for(double x = xbegin; x < xend; x += dx) {
+            for(double y = ybegin; y < yend; y += dy) {
+                out[xi][yi++] = sample(x, y, x + dx, y + dy);
+            }
+            xi++;
+            yi = 0;
+        }
     }
 }
