@@ -97,6 +97,16 @@ public class UniformWaveBox {
     }
 
     /**
+     * Sets the displacement at the given point if the point exists
+     * @param xi
+     * @param yi
+     * @param z
+     */
+    private void setZ(int xi, int yi, double z) {
+        if(xi >= 0 && xi < resolution && yi >= 0 && yi < resolution) z[xi][yi] = z;
+    }
+
+    /**
      * Transforms from real coordinate space to index space
      * @param r
      * @return
@@ -149,5 +159,17 @@ public class UniformWaveBox {
             xi++;
             yi = 0;
         }
+    }
+
+    /**
+     * Set the displacement at a single point (closest particle)
+     * @param x
+     * @param y
+     * @param z
+     */
+    public void setZPoint(double x, double y, double z) {
+        int xi = realToIndex(x);
+        int yi = realToIndex(y);
+        setZ(xi, yi, z);
     }
 }
