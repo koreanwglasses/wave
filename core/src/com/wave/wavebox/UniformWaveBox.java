@@ -7,10 +7,10 @@ public class UniformWaveBox implements WaveBox {
     private double[][] z; // x, y (col major) array
     private double[][] dzdt;
 
-    private double mass = 1;
-    private double k = 1;
+    private double mass = 5000;
+    private double k = 3;
 
-    private boolean bounded = false;
+    private boolean bounded = true;
 
     private int resolution;
 
@@ -26,6 +26,8 @@ public class UniformWaveBox implements WaveBox {
 
     @Override
     public void step(double dt) {
+        dt = Math.min(1/60f, dt);
+
         double dm = mass / (resolution * resolution); // dm
 
         // Acceleration / Velocity

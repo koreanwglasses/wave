@@ -29,7 +29,7 @@ public class SingleSine implements Screen {
 
         batch = new SpriteBatch();
 
-        waveBox = new UniformWaveBox(600);
+        waveBox = new UniformWaveBox(1200);
         waveBoxRenderer = new WaveBoxRenderer(waveBox, 600, 400);
     }
 
@@ -44,7 +44,8 @@ public class SingleSine implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         totalTime += delta;
-        waveBox.setZPoint(0.5, 0.5, 0.8 * Math.sin(totalTime * Math.PI));
+        waveBox.setZPoint(0.4, 0.5, Math.sin(totalTime * Math.PI));
+        waveBox.setZPoint(0.6, 0.5, Math.sin(totalTime * Math.PI));
         waveBox.step(delta);
 
         batch.begin();

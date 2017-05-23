@@ -17,7 +17,7 @@ public class WaveBoxRenderer {
     private Texture texture;
 
     private int resolutionX = 600;
-    private int resolutionY = 400;
+    private int resolutionY = 600;
 
     private double sourceX1 = 0;
     private double sourceX2 = 1;
@@ -27,7 +27,7 @@ public class WaveBoxRenderer {
     private int destX = 0;
     private int destY = 0;
     private int destWidth = 600;
-    private int destHeight = 400;
+    private int destHeight = 600;
 
     private double max = 1;
 
@@ -49,6 +49,8 @@ public class WaveBoxRenderer {
         for(int x = 0; x < resolutionX; x++) {
             for(int y = 0; y < resolutionY; y++) {
                 float value = (float) (sampleArray[x][y] / (2 * max) + 0.5);
+                if(value > 1) value = 1;
+                if(value < 0) value = 0;
                 pixmap.drawPixel(x, y, Color.rgba8888(value, value, value, 1));
             }
         }
