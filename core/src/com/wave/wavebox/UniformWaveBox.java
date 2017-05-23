@@ -1,9 +1,9 @@
-package com.wave;
+package com.wave.wavebox;
 
 /**
  * Created by fchoi on 5/22/2017.
  */
-public class UniformWaveBox implements WaveBox{
+public class UniformWaveBox implements WaveBox {
     private double[][] z; // x, y (col major) array
     private double[][] dzdt;
 
@@ -103,7 +103,7 @@ public class UniformWaveBox implements WaveBox{
      * @param z
      */
     private void setZ(int xi, int yi, double z) {
-        if(xi >= 0 && xi < resolution && yi >= 0 && yi < resolution) z[xi][yi] = z;
+        if(xi >= 0 && xi < resolution && yi >= 0 && yi < resolution) this.z[xi][yi] = z;
     }
 
     /**

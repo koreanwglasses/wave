@@ -1,4 +1,4 @@
-package com.wave;
+package com.wave.wavebox;
 
 public interface WaveBox {
     /**
