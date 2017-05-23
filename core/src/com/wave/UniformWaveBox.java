@@ -92,6 +92,8 @@ public class UniformWaveBox {
             else if(!yub) return z[resolution - 1][resolution - 1];
         } else if (!ylb) return z[xi][0];
         else if (!yub) return z[xi][resolution - 1];
+
+        return 0; // This statement should never be reached.
     }
 
     /**
