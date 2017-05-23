@@ -3,13 +3,16 @@ package com.wave;
 /**
  * Created by fchoi on 5/22/2017.
  */
-public class WaveBox {
+public class UniformWaveBox {
     private double[][] z; // x, y (col major) array
+    private double[][] dzdt;
+
     private double mass = 1;
     private double k = 1;
+
     private int resolution;
 
-    public WaveBox(int resolution) {
+    public UniformWaveBox(int resolution) {
         this.resolution = resolution;
         this.z = new double[resolution][resolution];
     }
