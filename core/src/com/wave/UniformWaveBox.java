@@ -3,7 +3,7 @@ package com.wave;
 /**
  * Created by fchoi on 5/22/2017.
  */
-public class UniformWaveBox {
+public class UniformWaveBox implements WaveBox{
     private double[][] z; // x, y (col major) array
     private double[][] dzdt;
 
@@ -135,17 +135,6 @@ public class UniformWaveBox {
         return sum / area;
     }
 
-    /**
-     * Updates array with sampled values of the wave box
-     * @param out
-     * @param width
-     * @param height
-     * @param xbegin
-     * @param xend
-     * @param ybegin
-     * @param yend
-     * @return
-     */
     public void sampleArray(double[][] out, int width, int height, double xbegin, double xend, double ybegin, double yend) {
         double dx = (xend - xbegin) / width;
         double dy = (yend - ybegin) / height;
@@ -161,12 +150,7 @@ public class UniformWaveBox {
         }
     }
 
-    /**
-     * Set the displacement at a single point (closest particle)
-     * @param x
-     * @param y
-     * @param z
-     */
+    @Override
     public void setZPoint(double x, double y, double z) {
         int xi = realToIndex(x);
         int yi = realToIndex(y);
