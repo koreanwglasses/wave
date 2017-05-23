@@ -15,10 +15,26 @@ public class UniformWaveBox {
     public UniformWaveBox(int resolution) {
         this.resolution = resolution;
         this.z = new double[resolution][resolution];
+        this.dzdt = new double[resolution][resolution];
     }
 
     public void step(double dt) {
+        double dm = mass / (resolution * resolution); // dm
 
+        // Acceleration / Velocity
+        for(int xi = 0; xi < resolution; xi++) {
+            for (int yi = 0; yi < resolution; yi++) {
+                double d2zdt2 = force(xi, yi) / dm; // a = F / dm
+                dzdt[xi][yi] += d2zdt2 * dt; // dv = a * dt
+            }
+        }
+
+        // Velocity / Displacement
+        for(int xi = 0; xi < resolution; xi++) {
+            for (int yi = 0; yi < resolution; yi++) {
+                z[xi][yi] += dzdt[xi][yi] * dt; // dx = v * dt
+            }
+        }
     }
 
     private double force(int xi, int yi) {
