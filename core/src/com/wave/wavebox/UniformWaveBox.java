@@ -7,8 +7,7 @@ public class UniformWaveBox implements WaveBox {
     private double[][] z; // x, y (col major) array
     private double[][] dzdt;
 
-    private double mass = 5000;
-    private double k = 3;
+    private double c = 0.06;
 
     private boolean bounded = true;
 
@@ -28,12 +27,10 @@ public class UniformWaveBox implements WaveBox {
     public void step(double dt) {
         dt = Math.min(1/60f, dt);
 
-        double dm = mass / (resolution * resolution); // dm
-
         // Acceleration / Velocity
         for(int xi = 0; xi < resolution; xi++) {
             for (int yi = 0; yi < resolution; yi++) {
-                double d2zdt2 = force(xi, yi) / dm; // a = F / dm
+                double d2zdt2 = c * c * laplace(xi, yi); // d2z/dt2 = c^2 Δ^2 z
                 dzdt[xi][yi] += d2zdt2 * dt; // dv = a * dt
             }
         }
@@ -46,23 +43,18 @@ public class UniformWaveBox implements WaveBox {
         }
     }
 
-    /**
-     * Calculate the force acting on a single particle
-     * @param xi
-     * @param yi
-     * @return force
-     */
-    private double force(int xi, int yi) {
-        // cross based
+    private double laplace(int xi, int yi) {
+        double dq = 1.0 / resolution;
 
-        double z = getZ(xi,yi);
+        double dzdx0 = (getZ(xi, yi) - getZ(xi - 2, yi)) / (2 * dq);
+        double dzdx1 = (getZ(xi + 2, yi) - getZ(xi, yi)) / (2 * dq);
+        double d2zdx2 = (dzdx1 - dzdx0) / (2 * dq);
 
-        double dz1 = getZ(xi + 1,yi) - z;
-        double dz2 = getZ(xi - 1,yi) - z;
-        double dz3 = getZ(xi,yi + 1) - z;
-        double dz4 = getZ(xi,yi - 1) - z;
+        double dzdy0 = (getZ(xi, yi) - getZ(xi, yi - 2)) / (2 * dq);
+        double dzdy1 = (getZ(xi, yi + 2) - getZ(xi, yi)) / (2 * dq);
+        double d2zdy2 = (dzdy1 - dzdy0) / (2 * dq);
 
-        return k * (dz1 + dz2 + dz3 + dz4);
+        return d2zdx2 + d2zdy2;
     }
 
     /**

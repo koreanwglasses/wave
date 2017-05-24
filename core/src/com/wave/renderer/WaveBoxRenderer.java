@@ -29,7 +29,7 @@ public class WaveBoxRenderer {
     private int destWidth = 600;
     private int destHeight = 600;
 
-    private double max = 1;
+    private double max = 0.6;
 
     public WaveBoxRenderer(WaveBox waveBox, int resolutionX, int resolutionY) {
         this.waveBox = waveBox;
