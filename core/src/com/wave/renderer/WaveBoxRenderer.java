@@ -26,10 +26,10 @@ public class WaveBoxRenderer {
 
     private int destX = 0;
     private int destY = 0;
-    private int destWidth = 600;
-    private int destHeight = 600;
+    private int destWidth = 800;
+    private int destHeight = 800;
 
-    private double max = 0.6;
+    private double max = 0.5;
 
     public WaveBoxRenderer(WaveBox waveBox, int resolutionX, int resolutionY) {
         this.waveBox = waveBox;
@@ -48,10 +48,14 @@ public class WaveBoxRenderer {
         waveBox.sampleArray(sampleArray, resolutionX, resolutionY, sourceX1, sourceX2, sourceY1, sourceY2);
         for(int x = 0; x < resolutionX; x++) {
             for(int y = 0; y < resolutionY; y++) {
-                float value = (float) (sampleArray[x][y] / (2 * max) + 0.5);
-                if(value > 1) value = 1;
-                if(value < 0) value = 0;
-                pixmap.drawPixel(x, y, Color.rgba8888(value, value, value, 1));
+                if(Math.abs(sampleArray[x][y]) == 0 && false) {
+                    pixmap.drawPixel(x, y, Color.rgba8888(Color.BLUE));
+                } else {
+                    float value = (float) (sampleArray[x][y] / (2 * max) + 0.5);
+                    if (value > 1) value = 1;
+                    if (value < 0) value = 0;
+                    pixmap.drawPixel(x, y, Color.rgba8888(value, value, value, 1));
+                }
             }
         }
 

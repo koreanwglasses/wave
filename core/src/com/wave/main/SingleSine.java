@@ -29,8 +29,8 @@ public class SingleSine implements Screen {
 
         batch = new SpriteBatch();
 
-        waveBox = new UniformWaveBox(1200);
-        waveBoxRenderer = new WaveBoxRenderer(waveBox, 600, 400);
+        waveBox = new UniformWaveBox(800);
+        waveBoxRenderer = new WaveBoxRenderer(waveBox, 800, 800);
     }
 
     @Override
@@ -38,15 +38,26 @@ public class SingleSine implements Screen {
 
     }
 
+    private void loop(float delta) {
+        delta = Math.min(1/60f, delta);
+
+        int iterations = 2;
+        double dt = delta / iterations;
+
+        for(int i = 0; i < iterations; i++) {
+            totalTime += dt;
+            waveBox.setZPoint(0.4, 0.5, 2 * Math.sin(totalTime * Math.PI));
+            waveBox.setZPoint(0.6, 0.5, -2 * Math.sin(totalTime * Math.PI));
+            waveBox.step(dt);
+        }
+    }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        totalTime += delta;
-        waveBox.setZPoint(0.4, 0.5, Math.sin(totalTime * Math.PI));
-        waveBox.setZPoint(0.6, 0.5, Math.sin(totalTime * Math.PI));
-        waveBox.step(delta);
+        loop(delta);
 
         batch.begin();
         waveBoxRenderer.render(batch);

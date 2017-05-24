@@ -9,7 +9,7 @@ public class UniformWaveBox implements WaveBox {
 
     private double c = 0.06;
 
-    private boolean bounded = true;
+    private boolean bounded = false;
 
     private int resolution;
 
@@ -117,8 +117,8 @@ public class UniformWaveBox implements WaveBox {
     public double sample(double x1, double y1, double x2, double y2) {
         double sum = 0;
         int area = 0;
-        for (int xi = realToIndex(x1); xi < realToIndex(x2); xi++) {
-            for (int yi = realToIndex(y1); yi < realToIndex(y2); yi++) {
+        for (int xi = realToIndex(x1); xi <= realToIndex(x2); xi++) {
+            for (int yi = realToIndex(y1); yi <= realToIndex(y2); yi++) {
                 sum += getZ(xi, yi);
                 area++;
             }
