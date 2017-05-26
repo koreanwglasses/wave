@@ -1,17 +1,26 @@
 package com.wave.wavebox;
 
+import java.io.Console;
+
 /**
  * Created by fchoi on 5/22/2017.
  */
-public class UniformWaveBox implements WaveBox {
+public class UniformWaveBox implements ChladniWaveBox {
     private double[][] z; // x, y (col major) array
     private double[][] dzdt;
 
-    private double c = 0.06;
+    private double c = 0.1;
+    private double damping = 0.1;
 
     private boolean bounded = false;
 
     private int resolution;
+
+    private double[][] chladni;
+    private double chladniMax = 1;
+
+    private double totalTime = 0;
+    private double chladniDelay = 0;
 
     /**
      * A wave simulator with a linear restoring force. Confined to [0, 1] x [0, 1]. Approximation based on a square lattice.
@@ -21,17 +30,25 @@ public class UniformWaveBox implements WaveBox {
         this.resolution = resolution;
         this.z = new double[resolution][resolution];
         this.dzdt = new double[resolution][resolution];
+
+        this.chladni = new double[resolution][resolution];
     }
 
     @Override
     public void step(double dt) {
         dt = Math.min(1/60f, dt);
+        totalTime += dt;
 
-        // Acceleration / Velocity
+        // Acceleration / Velocity + Chladni
         for(int xi = 0; xi < resolution; xi++) {
             for (int yi = 0; yi < resolution; yi++) {
-                double d2zdt2 = c * c * laplace(xi, yi); // d2z/dt2 = c^2 Δ^2 z
+                double d2zdt2 = c * c * laplace(xi, yi) - 2 * damping * dzdt[xi][yi]; // d2z/dt2 = c^2 Δ^2 z
                 dzdt[xi][yi] += d2zdt2 * dt; // dv = a * dt
+
+                if(Math.abs(d2zdt2) > 0.05 && totalTime >= chladniDelay) {
+                    chladni[xi][yi] += 1;
+                    if (chladni[xi][yi] > chladniMax) chladniMax = chladni[xi][yi];
+                }
             }
         }
 
@@ -41,6 +58,8 @@ public class UniformWaveBox implements WaveBox {
                 z[xi][yi] += dzdt[xi][yi] * dt; // dx = v * dt
             }
         }
+
+//        System.out.println(totalTime);
     }
 
     private double laplace(int xi, int yi) {
@@ -76,13 +95,13 @@ public class UniformWaveBox implements WaveBox {
         else if (!xlb) {
             if(yib) return z[0][yi];
             else if(!ylb) return z[0][0];
-            else if(!yub) return z[0][resolution - 1];
+            else if(!yub) return z[0][resolution - 2];
         } else if (!xub) {
-            if(yib) return z[resolution - 1][yi];
-            else if(!ylb) return z[resolution - 1][0];
-            else if(!yub) return z[resolution - 1][resolution - 1];
+            if(yib) return z[resolution - 2][yi];
+            else if(!ylb) return z[resolution - 2][0];
+            else if(!yub) return z[resolution - 2][resolution - 2];
         } else if (!ylb) return z[xi][0];
-        else if (!yub) return z[xi][resolution - 1];
+        else if (!yub) return z[xi][resolution - 2];
 
         return 0; // This statement should never be reached.
     }
@@ -135,6 +154,36 @@ public class UniformWaveBox implements WaveBox {
         for(double x = xbegin; x < xend && xi < width; x += dx) {
             for(double y = ybegin; y < yend && yi < height; y += dy) {
                 out[xi][yi++] = sample(x, y, x + dx, y + dy);
+            }
+            xi++;
+            yi = 0;
+        }
+    }
+
+    public double sampleChladni(double x1, double y1, double x2, double y2) {
+        double sum = 0;
+        int area = 0;
+        for (int xi = realToIndex(x1); xi <= realToIndex(x2); xi++) {
+            for (int yi = realToIndex(y1); yi <= realToIndex(y2); yi++) {
+                if(xi >= 0 && yi >= 0 && xi < resolution && yi < resolution) {
+                    sum += chladni[xi][yi] / chladniMax;
+                    area++;
+                }
+            }
+        }
+        return sum / area;
+    }
+
+    @Override
+    public void sampleChladniArray(double[][] out, int width, int height, double xbegin, double xend, double ybegin, double yend) {
+        double dx = (xend - xbegin) / width;
+        double dy = (yend - ybegin) / height;
+
+        int xi = 0;
+        int yi = 0;
+        for(double x = xbegin; x < xend && xi < width; x += dx) {
+            for(double y = ybegin; y < yend && yi < height; y += dy) {
+                out[xi][yi++] = sampleChladni(x, y, x + dx, y + dy);
             }
             xi++;
             yi = 0;

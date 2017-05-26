@@ -6,7 +6,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.wave.renderer.ChladniWaveBoxRenderer;
 import com.wave.renderer.WaveBoxRenderer;
+import com.wave.wavebox.ChladniWaveBox;
 import com.wave.wavebox.UniformWaveBox;
 import com.wave.wavebox.WaveBox;
 
@@ -19,8 +21,9 @@ public class SingleSine implements Screen {
 
     SpriteBatch batch;
 
-    WaveBox waveBox;
-    WaveBoxRenderer waveBoxRenderer;
+    ChladniWaveBox waveBox;
+    ChladniWaveBoxRenderer waveBoxRenderer;
+    WaveBoxRenderer waveBoxRenderer2;
 
     double totalTime = 0;
 
@@ -30,7 +33,8 @@ public class SingleSine implements Screen {
         batch = new SpriteBatch();
 
         waveBox = new UniformWaveBox(800);
-        waveBoxRenderer = new WaveBoxRenderer(waveBox, 800, 800);
+        waveBoxRenderer = new ChladniWaveBoxRenderer(waveBox, 800, 800);
+        waveBoxRenderer2 = new WaveBoxRenderer(waveBox, 800, 800);
     }
 
     @Override
@@ -46,8 +50,10 @@ public class SingleSine implements Screen {
 
         for(int i = 0; i < iterations; i++) {
             totalTime += dt;
-            waveBox.setZPoint(0.4, 0.5, 2 * Math.sin(totalTime * Math.PI));
-            waveBox.setZPoint(0.6, 0.5, -2 * Math.sin(totalTime * Math.PI));
+//            waveBox.setZPoint(0.4, 0.5, 2 * Math.sin(totalTime * Math.PI));
+//            waveBox.setZPoint(0.6, 0.5, -2 * Math.sin(totalTime * Math.PI));
+//            waveBox.setZPoint(0.5, 0.5, -2);
+            waveBox.setZPoint(0.5, 0.5, -2 * Math.sin(totalTime * Math.PI / 8));
             waveBox.step(dt);
         }
     }
@@ -61,6 +67,7 @@ public class SingleSine implements Screen {
 
         batch.begin();
         waveBoxRenderer.render(batch);
+        waveBoxRenderer2.render(batch);
         batch.end();
     }
 
