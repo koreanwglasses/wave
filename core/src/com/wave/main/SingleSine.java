@@ -50,10 +50,10 @@ public class SingleSine implements Screen {
 
         for(int i = 0; i < iterations; i++) {
             totalTime += dt;
-//            waveBox.setZPoint(0.4, 0.5, 2 * Math.sin(totalTime * Math.PI));
-//            waveBox.setZPoint(0.6, 0.5, -2 * Math.sin(totalTime * Math.PI));
+            waveBox.setZPoint(0.4, 0.5, 2 * Math.sin(totalTime * Math.PI));
+            waveBox.setZPoint(0.6, 0.5, -2 * Math.sin(totalTime * Math.PI));
 //            waveBox.setZPoint(0.5, 0.5, -2);
-            waveBox.setZPoint(0.5, 0.5, -2 * Math.sin(totalTime * Math.PI / 8));
+//            waveBox.setZPoint(0.5, 0.5, -2 * Math.sin(totalTime * Math.PI / 8));
             waveBox.step(dt);
         }
     }

@@ -1,6 +1,8 @@
 package com.wave.wavebox;
 
-import java.io.Console;
+import com.wave.math.DVector2;
+
+import java.util.ArrayList;
 
 /**
  * Created by fchoi on 5/22/2017.
@@ -19,6 +21,8 @@ public class UniformWaveBox implements ChladniWaveBox {
     private double[][] chladni;
     private double chladniMax = 1;
 
+    private ArrayList<DVector2> sourceLocations;
+
     private double totalTime = 0;
     private double chladniDelay = 0;
 
@@ -32,6 +36,10 @@ public class UniformWaveBox implements ChladniWaveBox {
         this.dzdt = new double[resolution][resolution];
 
         this.chladni = new double[resolution][resolution];
+
+        this.sourceLocations = new ArrayList<DVector2>();
+        sourceLocations.add(new DVector2(0.4, 0.5)); // Hardcoded for test purposes
+        sourceLocations.add(new DVector2(0.6, 0.5));
     }
 
     @Override
@@ -45,8 +53,8 @@ public class UniformWaveBox implements ChladniWaveBox {
                 double d2zdt2 = c * c * laplace(xi, yi) - 2 * damping * dzdt[xi][yi]; // d2z/dt2 = c^2 Δ^2 z
                 dzdt[xi][yi] += d2zdt2 * dt; // dv = a * dt
 
-                if(Math.abs(d2zdt2) > 0.05 && totalTime >= chladniDelay) {
-                    chladni[xi][yi] += 1;
+                if(!isNearSource(xi, yi)) {
+                    chladni[xi][yi] += Math.abs(d2zdt2);
                     if (chladni[xi][yi] > chladniMax) chladniMax = chladni[xi][yi];
                 }
             }
@@ -114,6 +122,15 @@ public class UniformWaveBox implements ChladniWaveBox {
      */
     private void setZ(int xi, int yi, double z) {
         if(xi >= 0 && xi < resolution && yi >= 0 && yi < resolution) this.z[xi][yi] = z;
+    }
+
+    private boolean isNearSource(int xi, int yi) {
+        for(DVector2 vector2 : sourceLocations) {
+            int x = xi - realToIndex(vector2.x);
+            int y = yi - realToIndex(vector2.y);
+            if (x * x + y * y < realToIndex(0.01) * realToIndex(0.01)) return true;
+        }
+        return false;
     }
 
     /**
