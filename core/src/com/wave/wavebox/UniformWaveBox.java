@@ -40,6 +40,7 @@ public class UniformWaveBox implements ChladniWaveBox {
         this.sourceLocations = new ArrayList<DVector2>();
         sourceLocations.add(new DVector2(0.4, 0.5)); // Hardcoded for test purposes
         sourceLocations.add(new DVector2(0.6, 0.5));
+//        sourceLocations.add(new DVector2(0.5, 0.5));
     }
 
     @Override
@@ -53,10 +54,8 @@ public class UniformWaveBox implements ChladniWaveBox {
                 double d2zdt2 = c * c * laplace(xi, yi) - 2 * damping * dzdt[xi][yi]; // d2z/dt2 = c^2 Δ^2 z
                 dzdt[xi][yi] += d2zdt2 * dt; // dv = a * dt
 
-                if(!isNearSource(xi, yi)) {
-                    chladni[xi][yi] += Math.abs(d2zdt2);
-                    if (chladni[xi][yi] > chladniMax) chladniMax = chladni[xi][yi];
-                }
+                chladni[xi][yi] += Math.abs(d2zdt2) * scalar(xi, yi);
+                if (chladni[xi][yi] > chladniMax) chladniMax = chladni[xi][yi];
             }
         }
 
@@ -124,13 +123,16 @@ public class UniformWaveBox implements ChladniWaveBox {
         if(xi >= 0 && xi < resolution && yi >= 0 && yi < resolution) this.z[xi][yi] = z;
     }
 
-    private boolean isNearSource(int xi, int yi) {
+    private double scalar(int xi, int yi) {
+        double scale = 1;
+        double a = resolution * resolution / 2000.0;
         for(DVector2 vector2 : sourceLocations) {
             int x = xi - realToIndex(vector2.x);
             int y = yi - realToIndex(vector2.y);
-            if (x * x + y * y < realToIndex(0.01) * realToIndex(0.01)) return true;
+            double u2 = x * x + y * y;
+            scale *= u2 / (u2 + a);
         }
-        return false;
+        return scale;
     }
 
     /**
